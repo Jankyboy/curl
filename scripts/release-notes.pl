@@ -6,11 +6,11 @@
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 2020, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) 2020 - 2021, Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at https://curl.haxx.se/docs/copyright.html.
+# are also available at https://curl.se/docs/copyright.html.
 #
 # You may opt to use, copy, modify, merge, publish, distribute and/or sell
 # copies of the Software, and permit persons to whom the Software is
@@ -37,7 +37,7 @@
 # 3. Run the cleanup script and let it sort the entries and remove unused
 # references from lines you removed in step (2):
 #
-# $ ./script/release-notes.pl cleanup
+# $ ./scripts/release-notes.pl cleanup
 #
 # 4. Reload RELEASE-NOTES and verify that things look okay. The cleanup
 # procedure can and should be re-run when lines are removed or rephrased.
@@ -110,8 +110,8 @@ for my $l (@gitlog) {
         if($line =~ /^Fixes(:|) .*[^0-9](\d+)/i) {
             push @fixes, $2;
         }
-        elsif($line =~ /^Closes(:|) .*[^0-9](\d+)/i) {
-            push @closes, $2;
+        elsif($line =~ /^Clo(s|)es(:|) .*[^0-9](\d+)/i) {
+            push @closes, $3;
         }
         elsif($line =~ /^Bug: (.*)/i) {
             push @bug, $1;
@@ -137,8 +137,8 @@ sub onecommit {
         $ref = $closes[0];
     }
 
-    if($ref =~ /^(\d+)/) {
-        $ref = "https://curl.haxx.se/bug/?i=$1"
+    if($ref =~ /^#?(\d+)/) {
+        $ref = "https://curl.se/bug/?i=$1"
     }
     if($ref) {
         my $r = getref();
@@ -156,7 +156,8 @@ for my $l (@releasenotes) {
         push @o, $l;
         push @o, "\n";
         for my $f (@line) {
-            push @o, sprintf " o $f%s\n", $moreinfo{$f}? sprintf(" [%d]", $moreinfo{$f}): "";
+            push @o, sprintf " o %s%s\n", $f,
+                $moreinfo{$f}? sprintf(" [%d]", $moreinfo{$f}): "";
             $refused[$moreinfo{$f}]=3;
         }
         push @o, " --- new entries are listed above this ---";
@@ -208,6 +209,6 @@ exit;
 # Debug: show unused references
 for my $r (1 .. $#refs) {
     if($refused[$r] != 3) {
-        printf "$r is %d!\n", $refused[$r];
+        printf "%s is %d!\n", $r, $refused[$r];
     }
 }

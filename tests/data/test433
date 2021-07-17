@@ -30,24 +30,24 @@ http
 </server>
 <setenv>
 XDG_CONFIG_HOME=%PWD/log
+HOME=
+CURL_HOME=
 </setenv>
 <name>
 Verify XDG_CONFIG_HOME use to find .curlrc
 </name>
 <command>
-%HOSTIP:%HTTPPORT/433
+%HOSTIP:%HTTPPORT/%TESTNUMBER
 </command>
 </client>
 
 #
 # Verify data after the test has been "shot"
 <verify>
-<strip>
-^User-Agent:.*
-</strip>
 <protocol nonewline="yes">
-POST /433 HTTP/1.1
+POST /%TESTNUMBER HTTP/1.1
 Host: %HOSTIP:%HTTPPORT
+User-Agent: curl/%VERSION
 Accept: */*
 a: a
 Content-Length: 11

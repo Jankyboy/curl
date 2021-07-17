@@ -6,11 +6,11 @@
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 1998 - 2020, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) 1998 - 2021, Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at https://curl.haxx.se/docs/copyright.html.
+# are also available at https://curl.se/docs/copyright.html.
 #
 # You may opt to use, copy, modify, merge, publish, distribute and/or sell
 # copies of the Software, and permit persons to whom the Software is
@@ -63,17 +63,6 @@ my @skiplist=(
     '^lib\/libcurl.plist',
     '^lib\/libcurl.vers.in',
 
-    # symbian build files we know little about
-    '^packages\/Symbian\/bwins\/libcurlu.def',
-    '^packages\/Symbian\/eabi\/libcurlu.def',
-    '^packages\/Symbian\/group\/bld.inf',
-    '^packages\/Symbian\/group\/curl.iby',
-    '^packages\/Symbian\/group\/curl.mmp',
-    '^packages\/Symbian\/group\/curl.pkg',
-    '^packages\/Symbian\/group\/libcurl.iby',
-    '^packages\/Symbian\/group\/libcurl.mmp',
-    '^packages\/Symbian\/group\/libcurl.pkg',
-
     # vms files
     '^packages\/vms\/build_vms.com',
     '^packages\/vms\/curl_release_note_start.txt',
@@ -89,6 +78,9 @@ my @skiplist=(
 
     # checksrc control files
     '\.checksrc$',
+
+    # an empty control file
+    "^zuul.d/playbooks/.zuul.ignore",
 
     );
 
@@ -129,7 +121,7 @@ sub checkfile {
     my $found = scanfile($file);
 
     if(!$found) {
-        print "$file: missing copyright range\n";
+        print "$file:1: missing copyright range\n";
         return 2;
     }
 
@@ -151,8 +143,9 @@ sub checkfile {
 
     if(defined($commityear) && scalar(@copyright) &&
        $copyright[0]{year} != $commityear) {
-        print "$file: copyright year out of date, should be $commityear, " .
-            "is $copyright[0]{year}\n";
+        printf "$file:%d: copyright year out of date, should be $commityear, " .
+            "is $copyright[0]{year}\n",
+            $copyright[0]{line};
     }
     else {
         $fine = 1;

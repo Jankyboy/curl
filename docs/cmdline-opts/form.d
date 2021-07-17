@@ -59,11 +59,11 @@ filename=, like this:
 
 If filename/path contains ',' or ';', it must be quoted by double-quotes like:
 
- curl -F "file=@\\"localfile\\";filename=\\"nameinpost\\"" example.com
+ curl -F "file=@\\"local,file\\";filename=\\"name;in;post\\"" example.com
 
 or
 
- curl -F 'file=@"localfile";filename="nameinpost"' example.com
+ curl -F 'file=@"local,file";filename="name;in;post"' example.com
 
 Note that if a filename/path is quoted by double-quotes, any double-quote
 or backslash within the filename must be escaped by backslash.
@@ -121,11 +121,11 @@ text file:
       -F '=)' -F '=@textfile.txt' ...  smtp://example.com
 
 Data can be encoded for transfer using encoder=. Available encodings are
-\fIbinary\fP and \fI8bit\fP that do nothing else than adding the corresponding
-Content-Transfer-Encoding header, \fI7bit\fP that only rejects 8-bit characters
-with a transfer error, \fIquoted-printable\fP and \fIbase64\fP that encodes
-data according to the corresponding schemes, limiting lines length to
-76 characters.
+*binary* and *8bit* that do nothing else than adding the corresponding
+Content-Transfer-Encoding header, *7bit* that only rejects 8-bit characters
+with a transfer error, *quoted-printable* and *base64* that encodes data
+according to the corresponding schemes, limiting lines length to 76
+characters.
 
 Example: send multipart mail with a quoted-printable text message and a
 base64 attached file:
